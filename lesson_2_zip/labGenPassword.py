@@ -9,11 +9,15 @@ checkNumber = True #По умолчанию верно, так как цифры
 checkLowerLetter = True #По умолчанию верно, так как букбы нижнего регистра обязательны
 checkUpperLetter = input('Использовать большие буквы в пароле (1 - да, 0 - нет): ')
 checkSpecSymvol = input('Использовать спец символы в пароле (1 - да, 0 - нет): ')
-checkMySpecSymvol = input('Хотите ли вы использовать спец символы выбранные вами? (1 - да, 0 - нет): ')
-if (checkMySpecSymvol == '1'):
-    inputSymvol = input('Введите слитно спец символы, которые будут использовать в пароле: ')
+if (checkSpecSymvol == '1'):
+    checkMySpecSymvol = input('Хотите ли вы использовать спец символы выбранные вами? (1 - да, 0 - нет): ')
 else:
-    inputSymvol = ''
+    checkMySpecSymvol = '0'
+    inputSymvol2 = ''
+if (checkMySpecSymvol == '1'):
+    inputSymvol2 = input('Введите слитно спец символы, которые будут использовать в пароле: ')
+else:
+    inputSymvol2 = ''
     
 alphabetEnLower = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 alphabetEnUpper = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -22,13 +26,18 @@ alphabetSpecSymvol = ['@', '№', '$', '%', '^', '&', '\\', '*', '(', ')']
 
 def generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymvol, inputSymvol2):
     
-    if (checkSpecSymvol):
+    if (checkMySpecSymvol == '1'):
         arraySymvol = [char for char in inputSymvol2]
-    print(arraySymvol)
+        print(arraySymvol)
     
+        
     k = round(int(countSymvol)*0.45) #кол-во букв нижнего регистра в пароле
-    l = round(int(countSymvol)*0.2)   #кол-во букв верхнего регистра в пароле
-    d = round(int(countSymvol)*0.15) #кол-во спец символов в пароле
+    if (checkUpperLetter == '1'):
+        l = round(int(countSymvol)*0.2)   #кол-во букв верхнего регистра в пароле
+    else: l = 0
+    if (checkSpecSymvol == '1'):
+        d = round(int(countSymvol)*0.15) #кол-во спец символов в пароле
+    else: d = 0
     j = int(countSymvol)-k-l-d   #кол-во цифр в пароле
     
     for i in range(int(countPassword)):
@@ -38,7 +47,7 @@ def generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymv
                 temp_array.append(random.choice(alphabetEnLower))
             for i in range(j):
                 temp_array.append(random.choice(arrayNumber))
-            print(temp_array)      
+            #print(temp_array)      
             random.shuffle(temp_array)
             print(temp_array)
         
@@ -50,7 +59,7 @@ def generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymv
                 temp_array.append(random.choice(arrayNumber))
             for i in range(l):
                 temp_array.append(random.choice(alphabetEnUpper))   
-            print(temp_array)      
+            #print(temp_array)      
             random.shuffle(temp_array)
             print(temp_array)
         
@@ -62,7 +71,7 @@ def generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymv
                 temp_array.append(random.choice(arrayNumber))
             for i in range(d):
                 temp_array.append(random.choice(alphabetSpecSymvol))   
-            print(temp_array)      
+            #print(temp_array)      
             random.shuffle(temp_array)
             print(temp_array)
             
@@ -74,7 +83,7 @@ def generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymv
                 temp_array.append(random.choice(arrayNumber))
             for i in range(d):
                 temp_array.append(random.choice(arraySymvol))   
-            print(temp_array)      
+            #print(temp_array)      
             random.shuffle(temp_array)
             print(temp_array)
             
@@ -88,7 +97,7 @@ def generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymv
                 temp_array.append(random.choice(alphabetSpecSymvol))
             for i in range(l):
                 temp_array.append(random.choice(alphabetEnUpper))  
-            print(temp_array)      
+            #print(temp_array)      
             random.shuffle(temp_array)
             print(temp_array)
             
@@ -102,9 +111,10 @@ def generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymv
                 temp_array.append(random.choice(arraySymvol))
             for i in range(l):
                 temp_array.append(random.choice(alphabetEnUpper))  
-            print(temp_array)      
+            #print(temp_array)      
             random.shuffle(temp_array)
             print(temp_array)   
     
     
-generatePassword(countPassword, countSymvol, checkNumber, checkLowerLetter, checkUpperLetter, checkSpecSymvol, inputSymvol)
+#generatePassword(countPassword, countSymvol, checkNumber, checkLowerLetter, checkUpperLetter, checkSpecSymvol, inputSymvol)
+generatePassword(countPassword, countSymvol, checkUpperLetter, checkSpecSymvol, inputSymvol2)
