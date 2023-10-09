@@ -1,28 +1,32 @@
 import numpy as np
 import cv2
+from PIL import Image
 
-def find_object_slope(image_path):
-    # Загрузка изображения
-    image = cv2.imread(image_path)
+# def find_object_slope(image_path):
+#     # Загрузка изображения
+#     image = cv2.imread(image_path)
 
-    # Преобразование изображения в оттенки серого
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#     # Преобразование изображения в оттенки серого
+#     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Применение алгоритма Canny для выделения границ объекта
-    edges = cv2.Canny(gray, 50, 150)
+#     # Применение алгоритма Canny для выделения границ объекта
+#     edges = cv2.Canny(gray, 50, 150)
 
-    # Поиск прямых на изображении с помощью преобразования Хафа
-    lines = cv2.HoughLinesP(edges, 1, np.pi/180, threshold=100, minLineLength=100, maxLineGap=10)
+#     # Поиск прямых на изображении с помощью преобразования Хафа
+#     lines = cv2.HoughLinesP(edges, 1, np.pi/180, threshold=100, minLineLength=100, maxLineGap=10)
 
-    # Вычисление угла наклона прямой
-    slope = np.degrees(np.arctan2(lines[0][0][3] - lines[0][0][1], lines[0][0][2] - lines[0][0][0]))
+#     # Вычисление угла наклона прямой
+#     slope = np.degrees(np.arctan2(lines[0][0][3] - lines[0][0][1], lines[0][0][2] - lines[0][0][0]))
 
-    return slope
+#     return slope
 
 # Пример использования
-image_path = 'vizitka90.png'
-slope = find_object_slope(image_path)
-print('Угол наклона объекта:', slope, 'градусов')
+image_path = 'C:\\Users\\User\\Desktop\\4sem\\OOP\\PyProject\\vizitka.png'
+im = Image.open(image_path)
+width, height = im.size
+print(width, height)
+# slope = find_object_slope(image_path)
+# print('Угол наклона объекта:', slope, 'градусов')
 
 
 

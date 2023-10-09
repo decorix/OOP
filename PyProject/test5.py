@@ -19,32 +19,49 @@ class App:
         self.frame3 = tkinter.Frame(self.root, borderwidth=2, relief='solid')
         self.frame3.grid()
 
+        # self.widthOld = 0
+        # self.heightOld  = 0
+        self.width = 0
+        self.height = 0
         
         self.enabled = IntVar()
         
-        self.enabled_checkbutton = tkinter.Checkbutton(text="Картинка перевернута", variable=self.enabled, command=self.checkbutton_changed)
-        self.enabled_checkbutton.grid(row=3, column=1)
+        # self.enabled_checkbutton = tkinter.Checkbutton(text="Картинка перевернута", variable=self.enabled, command=self.checkbutton_changed)
+        # self.enabled_checkbutton.grid(row=3, column=1)
         
         self.reverse = False  #проверка перевернута ли фотография
         self.status = False
 
         # Добавим метку
-        self.label = tkinter.Label(self.frame, text="Hello, World!").grid(row=1, column=1)
+        # self.label = tkinter.Label(self.frame, text="Hello, World!").grid(row=1, column=1)
+        self.label = tkinter.Label(self.frame3, text="Расстояние между границей \n прозрачного фона и изображения").grid(row=1, column=4)
 
-        self.image1 = Image.open("C:\\Users\\User\\Desktop\\4sem\\OOP\\PyProject\\whiteBG.png")
+       
+
+
+        self.image1 = Image.new(size=(250, 250), mode='RGBA', color='white')
         self.photo1 = ImageTk.PhotoImage(self.image1)
         
         self.path = ''
         
-        self.image2 = Image.open("C:\\Users\\User\\Desktop\\4sem\\OOP\\PyProject\\whiteBG.png")
+        
+        self.image2 = Image.new(size=(250, 250), mode='RGBA', color='white')
         self.photo2 = ImageTk.PhotoImage(self.image2)
 
         # вставляем кнопку
-        self.but = tkinter.Button(self.frame, text="Загрузить картинку", command=self.my_event_handler).grid(row=2, column=1)
+        self.but = tkinter.Button(self.frame, text="Загрузить картинку", command=self.my_event_handler).grid(row=1, column=1)
         # self.open_button = tkinter.Button(text="Открыть файл", command=self.open_file).pack(row=1, column=3)
         self.but2 = tkinter.Button(self.frame2, text="Редактировать картинку", command=self.editingPicture).grid(row=1, column=2)
-        self.but3 = tkinter.Button(self.frame3, text="Влево", command=self.leftRotate).grid(row=1, column=1)
-        self.but4 = tkinter.Button(self.frame3, text="Вправо", command=self.rightRotate).grid(row=1, column=2)
+        self.but3 = tkinter.Button(self.frame3, text="Против часовой", command=self.leftRotate).grid(row=2, column=1)
+        self.but4 = tkinter.Button(self.frame3, text="По часовой", command=self.rightRotate).grid(row=2, column=2)
+        self.but5 = tkinter.Button(self.frame3, text="Удалить прозрачный фон", command=self.deleteBackground).grid(row=2, column=3)
+        
+        self.spinbox_var = 0
+        
+        self.spinbox = tkinter.Spinbox(self.frame3, from_=1.0, to=100.0, command=self.pixel)
+        self.spinbox.grid(row=2, column=4)
+        # self.but6 = tkinter.Button(self.frame3, text="По часовой", command=self.rightRotate).grid(row=1, column=2)
+
 
 
         # Добавим изображение
@@ -63,12 +80,15 @@ class App:
         self.path = filedialog.askopenfilename()
         result = self.path.split('.')
         img = Image.open(self.path)
+        self.width, self.height = img.size
+        self.label = tkinter.Label(self.frame, text=f"Размер изображения: {self.width}x{self.height} ").grid(row=3, column=1)
         new_image = img.resize((300, 300))
         new_image.save(result[0]+'ResizeOld.' + result[1])
         self.image1=Image.open(result[0]+'ResizeOld.' + result[1])
         self.photo1 = ImageTk.PhotoImage(self.image1)
         self.c_image = self.canvas.create_image(0, 0, anchor='nw', image=self.photo1)
         self.canvas.grid(row=2, column=1)
+        
 
               
     def editingPicture(self):
@@ -123,6 +143,9 @@ class App:
         print(self.path)
         result = self.path.split('.')
         img = Image.open(self.path)
+        self.width, self.height = img.size
+        self.searchSize()
+
                         # изменяем размер
         new_image = img.resize((300, 300))
                         # сохранение картинки
@@ -145,5 +168,39 @@ class App:
         self.rotate_picture(90)
     def rightRotate(self):
         self.rotate_picture(-90)
+        
+    def deleteBackground(self):        
+        image = Image.open(self.path)
+        # Создаем список пикселей, содержащий непрозрачные пиксели
+        transparent = Image.new('RGBA', image.size, (0, 0, 0, 0))
+        transparent.paste(image, (0, 0), mask=image)
+        
+        # Находим левую, правую, верхнюю и нижнюю границы непрозрачных пикселей
+        left, top, right, bottom = image.width, image.height, 0, 0
+        for x in range(image.width):
+            for y in range(image.height):
+                pixel = transparent.getpixel((x, y))
+                if pixel[3] != 0:  # Если пиксель непрозрачный
+                    left = min(left, x)
+                    top = min(top, y)
+                    right = max(right, x)
+                    bottom = max(bottom, y)
+        
+        # Обрезаем изображение по найденным границам
+        cropped_image = image.crop((left-self.spinbox_var, top-self.spinbox_var, right+self.spinbox_var, bottom+self.spinbox_var))
+        
+        self.width=cropped_image.width
+        self.height=cropped_image.height
+        self.searchSize()
 
+        # Сохраняем обрезанное изображение
+        cropped_image.save(self.path)
+        
+    def searchSize(self):
+        self.label = tkinter.Label(self.frame2, text=f"Размер изображения: {self.width}x{self.height} ").grid(row=3, column=1)
+
+    def pixel(self):
+        self.spinbox_var = int(self.spinbox.get())
+
+        
 app= App()
